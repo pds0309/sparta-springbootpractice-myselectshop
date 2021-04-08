@@ -1,5 +1,6 @@
-package com.sparta2.springcore;
+package com.sparta2.springcore.utils;
 
+import com.sparta2.springcore.dto.ItemDto;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.*;
@@ -11,7 +12,7 @@ import java.util.List;
 
 @Component // 스프링 IoC 에 빈으로 등록
 public class NaverShopSearch {
-    public String search(String query) {
+    public static  String search(String query) {
         RestTemplate rest = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Naver-Client-Id", "zdqMoIkFaK8uKvC2oNY2");
@@ -26,7 +27,7 @@ public class NaverShopSearch {
         System.out.println("Response status: " + status);
         System.out.println(response);
 
-        return response;
+        return  response;
     }
 
     public List<ItemDto> fromJSONtoItems(String result) {
@@ -39,5 +40,8 @@ public class NaverShopSearch {
             ret.add(itemDto);
         }
         return ret;
+    }
+    public static void main(String[] args){
+        search("문명");
     }
 }

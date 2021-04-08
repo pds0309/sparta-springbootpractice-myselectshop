@@ -1,4 +1,4 @@
-package com.sparta2.springcore;
+package com.sparta2.springcore.dto;
 
 
 
