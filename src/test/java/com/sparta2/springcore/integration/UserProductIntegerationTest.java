@@ -12,6 +12,7 @@ import com.sparta2.springcore.service.UserService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -158,16 +159,22 @@ class UserProductIntegerationTest {
         assertEquals(createdProduct.getLprice(), product.getLprice());
         assertEquals(myPrice, product.getMyprice());
 
-        createdProduct.updateMyPrice(myPrice);
+        createdProduct.setMyprice(myPrice);
     }
 
     @Test
     @Order(5)
-    @DisplayName("5. 회원이 등록한 업데이트된 관심상품이 잘 조회되는가?")
+    @DisplayName("회원이 등록한 모든 관심상품 조회")
     void test5() {
         // given
+        int page = 0;
+        int size = 10;
+        String sortBy = "id";
+        boolean isAsc = false;
+
         // when
-        List<Product> productList = productService.getProducts(createdUser.getId());
+        Page<Product> productList = productService.getProducts(createdUser.getId(), page, size, sortBy, isAsc);
+
         // then
         // 1. 전체 상품에서 테스트에 의해 생성된 상품 찾아오기 (상품의 id 로 찾음)
         Long createdProductId = this.createdProduct.getId();
@@ -175,7 +182,7 @@ class UserProductIntegerationTest {
                 .filter(product -> product.getId().equals(createdProductId))
                 .findFirst()
                 .orElse(null);
-        // 2. Order(3) 테스트에 의해 생성된 상품과 일치하는지 검증
+        // 2. Order(1) 테스트에 의해 생성된 상품과 일치하는지 검증
         assertNotNull(foundProduct);
         assertEquals(createdUser.getId(), foundProduct.getUserId());
         assertEquals(this.createdProduct.getId(), foundProduct.getId());
@@ -183,7 +190,7 @@ class UserProductIntegerationTest {
         assertEquals(this.createdProduct.getImage(), foundProduct.getImage());
         assertEquals(this.createdProduct.getLink(), foundProduct.getLink());
         assertEquals(this.createdProduct.getLprice(), foundProduct.getLprice());
-        // 3. Order(4) 테스트에 의해 myPrice 가격이 정상적으로 업데이트되었는지 검증
+        // 3. Order(2) 테스트에 의해 myPrice 가격이 정상적으로 업데이트되었는지 검증
         assertEquals(createdProduct.getMyprice(), foundProduct.getMyprice());
     }
 }

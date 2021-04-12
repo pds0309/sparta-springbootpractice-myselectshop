@@ -64,7 +64,7 @@ public class UserService {
 //        User user = new User(username, password, email, role);
 //        userRepository.save(user);
 //    }
-    public void registerUser(SignupRequestDto requestDto) {
+    public User registerUser(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
         String email = requestDto.getEmail();
         // 회원 ID 중복 확인
@@ -90,6 +90,7 @@ public class UserService {
 
         User user = new User(username, password, email, role);
         userRepository.save(user);
+        return user;
     }
 
     public void kakaoLogin(String authorizedCode) {
