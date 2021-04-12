@@ -4,6 +4,7 @@ package com.sparta2.springcore.service;
 import com.sparta2.springcore.dto.ProductMypriceRequestDto;
 import com.sparta2.springcore.dto.ProductRequestDto;
 import com.sparta2.springcore.model.Product;
+import com.sparta2.springcore.repository.FolderRepository;
 import com.sparta2.springcore.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,8 @@ class ProductServiceTest {
     //mockito 로 mock 오브젝트가 된다.
     @Mock
     ProductRepository productRepository;
+    @Mock
+    FolderRepository folderRepository;
 
     @Test
     @DisplayName("updateProduct() 에 의해 관심 가격이 3만원으로 변경되는지 확인")
@@ -45,7 +48,7 @@ class ProductServiceTest {
 
         Product product = new Product(requestProductDto, userId);
 
-        ProductService productService = new ProductService(productRepository);
+        ProductService productService = new ProductService(productRepository,folderRepository );
         when(productRepository.findById(productId))
                 .thenReturn(Optional.of(product));
 
@@ -77,7 +80,7 @@ class ProductServiceTest {
 
         Product product = new Product(requestProductDto, userId);
 
-        ProductService productService = new ProductService(productRepository);
+        ProductService productService = new ProductService(productRepository , folderRepository);
         when(productRepository.findById(productId))
                 .thenReturn(Optional.of(product));
 
@@ -87,4 +90,5 @@ class ProductServiceTest {
             productService.updateProduct(productId, requestMyPriceDto);
         });
     }
+    
 }

@@ -114,8 +114,9 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 //    List<Product> findAllByUserId(Long uId);
     Page<Product> findAllByUserId(Long uId , Pageable pageable);
+
+    Page<Product> findAllByUserIdAndFolderList_Id(Long userId, Long folderId, Pageable pageable);
+
 }
-
-
 
 
