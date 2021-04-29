@@ -1,6 +1,7 @@
 package com.sparta2.springcore.service;
 
 
+import com.sparta2.springcore.exception.ApiRequestException;
 import com.sparta2.springcore.model.Folder;
 import com.sparta2.springcore.model.Product;
 import com.sparta2.springcore.model.User;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +29,7 @@ public class FolderService {
 
     // 생성자: ProductFolderService() 가 생성될 때 호출됨
     @Autowired
-    public FolderService(FolderRepository folderRepository , ProductRepository productRepository) {
+    public FolderService(FolderRepository folderRepository, ProductRepository productRepository) {
         // 멤버 변수 생성
         this.folderRepository = folderRepository;
 
@@ -40,36 +42,33 @@ public class FolderService {
     }
 
 
-
+    @Transactional(readOnly = false)
     public List<Folder> createFolders(List<String> folderNameList, User user) {
-
-        folderNameList = folderNameList.stream().distinct().collect(Collectors.toList());
-
         List<Folder> folderList = new ArrayList<>();
-        List<Folder> existList = folderRepository.findByUserAndNameIsIn(user,folderNameList);
-        List<String> existName = new ArrayList<>();
 
-        for(int i = 0 ; i < existList.size(); i ++){
-            existName.add(existList.get(i).getName() );
-        }
         for (String folderName : folderNameList) {
-            Folder folder = new Folder(folderName, user);
-            // 해당 유저의 폴더들 중 없는 이름일 때만 추가해준다.
-            if(!existName.contains(folderName)){
-                folderList.add(folder);
+            // 1) DB 에 폴더명이 folderName 인 폴더가 존재하는지?
+            Folder folderInDB = folderRepository.findByName(folderName);
+            if (folderInDB != null) {
+                // DB 에 중복 폴더명 존재한다면 Exception 발생시킴
+                throw new ApiRequestException("중복된 폴더명 (" + folderName +") 을 삭제하고 재시도해 주세요!");
             }
+            // 2) 폴더를 DB 에 저장
+            Folder folder = new Folder(folderName, user);
+            folder = folderRepository.save(folder);
+            // 3) folderList 에 folder Entity 객체를 추가
+            folderList.add(folder);
         }
-        folderList = folderRepository.saveAll(folderList);
         return folderList;
     }
 
     //폴더별 관심상품 조회
     public Page<Product> getFolderProduct(User user, int page,
-                                          int size, String sortBy, boolean isAsc, Long folderId){
+                                          int size, String sortBy, boolean isAsc, Long folderId) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Product> list = productRepository.findAllByUserIdAndFolderList_Id(user.getId(),folderId,pageable) ;
+        Page<Product> list = productRepository.findAllByUserIdAndFolderList_Id(user.getId(), folderId, pageable);
         return list;
     }
 /* 강의 코드

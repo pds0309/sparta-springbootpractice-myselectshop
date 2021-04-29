@@ -2,12 +2,15 @@ package com.sparta2.springcore.controller;
 
 
 import com.sparta2.springcore.dto.FolderCreateRequestDto;
+import com.sparta2.springcore.exception.ApiException;
 import com.sparta2.springcore.model.Folder;
 import com.sparta2.springcore.model.Product;
 import com.sparta2.springcore.security.UserDetailsImpl;
 import com.sparta2.springcore.service.FolderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,5 +69,21 @@ public class FolderController {
     }
 
      */
+//    //공통적으로 이 컨트롤러에서 예외발생시 해당부분으로 들어올게
+//    @ExceptionHandler({ IllegalArgumentException.class })
+//    public ResponseEntity<Object> handle(IllegalArgumentException ex) {
+//        // 처리는 여기서 해
+//        ApiException apiException = new ApiException(
+//                // 전달할 메시지
+//                ex.getMessage(),
+//                // HTTP 400 -> Client Error
+//                // 클라이언트에서의 잘못된 인자로 인해 발생할 예상된 에러이다.
+//                HttpStatus.BAD_REQUEST
+//        );
+//        // 이 결과를 클라이언트에게 보내줄게
+//        // ResponseEntity : 응답을 해줌 - 클라이언트에게 전달된다.
+//        return new ResponseEntity<>(
+//                apiException,
+//                HttpStatus.BAD_REQUEST ); }
 }
 

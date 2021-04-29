@@ -13,4 +13,6 @@ public interface FolderRepository extends JpaRepository<Folder, Long> {
     // 하나의 유저에서 동일한 이름의 폴더가 여러개 생성되어서는 안된다.
 
     List<Folder> findByUserAndNameIsIn(User user , List<String> folderNameList);
+
+    Folder findByName(String folderName);
 }
