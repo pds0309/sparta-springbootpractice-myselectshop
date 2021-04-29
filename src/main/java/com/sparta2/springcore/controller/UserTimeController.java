@@ -30,7 +30,8 @@ public class UserTimeController {
         for (UserTime userTime : allUserTime) {
             String username = userTime.getUser().getUsername();
             long totalTime = userTime.getTotalTime();
-            UserTimeDto dto = new UserTimeDto(username, totalTime);
+            int totalCnt = userTime.getTotalCnt();
+            UserTimeDto dto = new UserTimeDto(username, totalTime , totalCnt);
             allUserTimeDto.add(dto);
         }
         return allUserTimeDto;

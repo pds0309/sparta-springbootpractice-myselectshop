@@ -7,4 +7,5 @@ import lombok.Getter;
 public class UserTimeDto {
     String username;
     long totalTime;
+    int cnt;
 }

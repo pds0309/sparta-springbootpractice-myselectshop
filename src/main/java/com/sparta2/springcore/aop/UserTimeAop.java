@@ -25,6 +25,7 @@ public class UserTimeAop {
     //부가기능에 대한 부분
     public Object execute(ProceedingJoinPoint joinPoint) throws Throwable {
         // 측정 시작 시간
+
         long startTime = System.currentTimeMillis();
         try {
             // 핵심기능 수행
@@ -48,9 +49,12 @@ public class UserTimeAop {
                     long totalTime = userTime.getTotalTime();
                     totalTime = totalTime + runTime;
                     userTime.updateTotalTime(totalTime);
+                    int cnt = userTime.getTotalCnt() + 1;
+                    userTime.updateTotalCnt(cnt);
+
                 } else {
                     // 로그인 회원의 기록이 없으면
-                    userTime = new UserTime(loginUser, runTime);
+                    userTime = new UserTime(loginUser, runTime , 0);
                 }
                 System.out.println("[User Time] User: " + userTime.getUser().getUsername() + ", Total Time: " + userTime.getTotalTime() + " ms");
                 userTimeRepository.save(userTime);
